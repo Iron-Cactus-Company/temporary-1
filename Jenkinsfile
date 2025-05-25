@@ -18,7 +18,7 @@ pipeline {
                 '''
             }
         }
-        stage('For bug branches') {
+        stage('For PRs') {
             when {
                 barnch 'PR-*'
             }
