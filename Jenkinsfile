@@ -10,7 +10,7 @@ pipeline {
 
         stage('For bug branches') {
             when {
-                barnch "bug/*"
+                branch "bug/*"
             }
             steps {
                 sh '''
@@ -20,7 +20,7 @@ pipeline {
         }
         stage('For PRs') {
             when {
-                barnch 'PR-*'
+                branch 'PR-*'
             }
             steps {
                 echo 'This only runs on PRs'
