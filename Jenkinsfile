@@ -2,12 +2,6 @@ pipeline {
     agent { label 'docker-agent' }
 
     stages {
-        stage('Say hello!') {
-            steps {
-                echo "Hello World"
-            }
-        }
-
         stage('For bug branches') {
             when {
                 branch "bug/*"
