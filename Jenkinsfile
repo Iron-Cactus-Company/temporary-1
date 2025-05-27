@@ -17,6 +17,7 @@ pipeline {
             }
             steps {
                 echo 'This only runs on PRs'
+                echo 'Failing for some reason'
                 sh 'exit 1'
             }
         }
