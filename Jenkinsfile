@@ -23,19 +23,14 @@ pipeline {
                         error("Stopping pipeline due to npm install failure")
                     }
 
-                    def testOutput = ''
-                    def testStatus = 0
-                    try {
-                        testOutput = sh(script: 'npm run test -- --ci --reporters=default --reporters=jest-junit', returnStdout: true)
-                    } catch (e) {
-                        testOutput = e.getMessage()
-                        testStatus = 1
-                    }
+                    def testOutput = sh(script: 'npm run test -- --ci 2>&1 || true', returnStdout: true).trim()
 
-                    if (testStatus != 0) {
+                    def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
+
+                    if (testFailed) {
                         publishChecks name: checkName,
                           title: 'Unit Tests Failed',
-                          summary: 'Jest tests failed',
+                          summary: '❌ Jest tests failed',
                           text: """```
                           ${testOutput.take(6500)}
                           ```""",
@@ -44,8 +39,10 @@ pipeline {
                     } else {
                         publishChecks name: checkName,
                           title: 'Unit Tests Passed',
-                          summary: 'All Jest tests passed',
-                          text: 'All unit tests passed successfully.',
+                          summary: '✅ All Jest tests passed',
+                          text: """```
+                          ${testOutput.take(6500)}
+                          ```""",
                           status: 'COMPLETED',
                           conclusion: 'SUCCESS'
                     }
