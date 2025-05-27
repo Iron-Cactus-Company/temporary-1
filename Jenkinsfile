@@ -7,7 +7,7 @@ pipeline {
                 branch "bug/*"
             }
             steps {      
-                echo 'This only runs on PRs'
+                echo 'This only runs on PRs!'
                 publishChecks name: "Bug branches name",
                     title: 'Everything is ok on bug branch',
                     summary: '✅ All tests passed.',
