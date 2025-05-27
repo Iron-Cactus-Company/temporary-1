@@ -23,7 +23,10 @@ pipeline {
                         error("Stopping pipeline due to npm install failure")
                     }
 
-                    def testOutput = sh(script: 'npm run test -- --ci 2>&1 || true', returnStdout: true).trim()
+                    def testOutput = sh(
+                      script: 'npm run test -- --ci 2>&1 | npx strip-ansi || true',
+                      returnStdout: true
+                    ).trim()
 
                     def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
 
