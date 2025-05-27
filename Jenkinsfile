@@ -26,16 +26,14 @@ pipeline {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                   sh 'npm install'
                   sh 'npm run test'
-                  publishChecks name: 'Jest Tests',
-                    title: 'Jest Unit Tests',
-                    summary: 'All tests passed',
-                    text: 'Jest completed successfully.'
+                  publishChecks name: 'Unit Tests',
+                    title: 'All unit tests are passed',
                 }
 
                 script {
                   if (currentBuild.currentResult == 'FAILURE') {
                     publishChecks name: 'Jest Tests',
-                      title: 'Jest Unit Tests',
+                      title: 'Some unit tests are failed',
                       summary: 'Test failures',
                       text: 'One or more Jest tests failed. Please check the Jenkins logs for details.'
                   }
