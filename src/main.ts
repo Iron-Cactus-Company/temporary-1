@@ -1,3 +1,3 @@
-const lol = 1 + 1;
+const lol = 1 + 2;
 
 console.log(lol);
