@@ -21,4 +21,14 @@ pipeline {
             }
         }
     }
+
+     post {
+         success {
+            githubCheck name: "This is the name", status: 'completed', conclusion: 'success', summary: 'Success summury is here', detailsURL: env.BUILD_URL
+         }
+         
+        failure {
+            githubCheck name: "Somethings is wrong", status: 'completed', conclusion: 'failure', summary: '❌ CI pipeline failed.', detailsURL: env.BUILD_URL
+        }
+    }
 }
