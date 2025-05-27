@@ -23,13 +23,13 @@ pipeline {
             }
             steps {
                 echo 'This only runs on PRs'
-                //publishChecks name: "PR checks name",
-                //    title: 'Everything is ok for PR',
-                //    summary: 'PR summury',
-                //    text: 'PR text here.',
-                //    status: 'COMPLETED',
-                //    conclusion: 'SUCCESS',
-                //    detailsURL: "${env.BUILD_URL}"
+                publishChecks name: "PR checks name",
+                    title: 'Everything is ok for PR',
+                    summary: 'PR summury',
+                    text: 'PR text here.',
+                    status: 'COMPLETED',
+                    conclusion: 'SUCCESS',
+                    detailsURL: "${env.BUILD_URL}"
             }
         }
     }
