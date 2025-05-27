@@ -28,6 +28,8 @@ pipeline {
                   sh 'npm run test'
                   publishChecks name: 'Unit Tests',
                     title: 'All unit tests are passed'
+                    status: 'completed',
+                    conclusion: 'success',
                 }
 
                 script {
@@ -36,6 +38,8 @@ pipeline {
                       title: 'Some unit tests are failed',
                       summary: 'Test failures',
                       text: 'One or more Jest tests failed. Please check the Jenkins logs for details.'
+                      status: 'completed',
+                      conclusion: 'failure',
                   }
                 }
             }
