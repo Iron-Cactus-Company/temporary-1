@@ -2,47 +2,50 @@ pipeline {
     agent { label 'nodejs-agent' }
 
     stages {
-        stage('For bug branches') {
-            when {
-                branch "bug/*"
-            }
-            steps {
-                echo 'This only runs on bug branches!'
-            }
-        }
-
         stage('PR checks') {
             when {
                 branch 'PR-*'
             }
             steps {
-                echo 'Run unit tests'
+                echo 'Running PR checks...'
 
                 script {
+                    def checkName = 'Unit Tests'
+
                     def npmStatus = sh(script: 'npm install', returnStatus: true)
                     if (npmStatus != 0) {
-                        publishChecks name: 'Jest Tests',
+                        publishChecks name: checkName,
                           title: 'Dependency Installation Failed',
-                          summary: '❌ npm install failed',
-                          text: '`npm install` failed. Please verify your `package.json` and lock files.',
+                          summary: '`npm install` failed',
+                          text: 'Check your `package.json` and ensure all dependencies are valid.',
                           status: 'COMPLETED',
                           conclusion: 'FAILURE'
                         error("Stopping pipeline due to npm install failure")
                     }
 
-                    def testsStatus = sh(script: 'npm run test', returnStatus: true)
-                    if (testsStatus != 0) {
-                        publishChecks name: 'Jest Tests',
-                          title: 'Test Failures',
-                          summary: '❌ Unit tests failed',
-                          text: 'One or more tests failed. Check the Jenkins logs for details.',
+                    def testOutput = ''
+                    def testStatus = 0
+                    try {
+                        testOutput = sh(script: 'npm run test -- --ci --reporters=default --reporters=jest-junit', returnStdout: true)
+                    } catch (e) {
+                        testOutput = e.getMessage()
+                        testStatus = 1
+                    }
+
+                    if (testStatus != 0) {
+                        publishChecks name: checkName,
+                          title: 'Unit Tests Failed',
+                          summary: 'Jest tests failed',
+                          text: """```
+                          ${testOutput.take(6500)}
+                          ```""",
                           status: 'COMPLETED',
                           conclusion: 'FAILURE'
                     } else {
-                        publishChecks name: 'Jest Tests',
-                          title: 'All Tests Passed',
-                          summary: '✅ Jest tests successful',
-                          text: 'All unit tests passed.',
+                        publishChecks name: checkName,
+                          title: 'Unit Tests Passed',
+                          summary: 'All Jest tests passed',
+                          text: 'All unit tests passed successfully.',
                           status: 'COMPLETED',
                           conclusion: 'SUCCESS'
                     }
