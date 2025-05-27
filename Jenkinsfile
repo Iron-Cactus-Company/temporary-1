@@ -27,7 +27,7 @@ pipeline {
                   sh 'npm install'
                   sh 'npm run test'
                   publishChecks name: 'Unit Tests',
-                    title: 'All unit tests are passed',
+                    title: 'All unit tests are passed'
                 }
 
                 script {
