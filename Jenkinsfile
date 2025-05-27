@@ -22,14 +22,24 @@ pipeline {
                 branch 'PR-*'
             }
             steps {
-                echo 'This only runs on PRs'
-                publishChecks name: "PR checks name",
-                    title: 'Everything is ok for PR',
-                    summary: 'PR summury',
-                    text: 'PR text here.',
-                    status: 'COMPLETED',
-                    conclusion: 'SUCCESS',
-                    detailsURL: "${env.BUILD_URL}"
+                echo 'Run tests'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                  sh 'npm install'
+                  sh 'npm run test'
+                  publishChecks name: 'Jest Tests',
+                    title: 'Jest Unit Tests',
+                    summary: 'All tests passed',
+                    text: 'Jest completed successfully.'
+                }
+
+                script {
+                  if (currentBuild.currentResult == 'FAILURE') {
+                    publishChecks name: 'Jest Tests',
+                      title: 'Jest Unit Tests',
+                      summary: 'Test failures',
+                      text: 'One or more Jest tests failed. Please check the Jenkins logs for details.'
+                  }
+                }
             }
         }
     }
