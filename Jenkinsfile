@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'docker-agent' }
+    agent { label 'nodejs-agent' }
 
     stages {
         stage('For bug branches') {
