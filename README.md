@@ -4,7 +4,5 @@ Some description for the temporary repo 1
 
 Ok it is fixed!dfg
 
-fdgh
-gfdhsrfta
 
-fdsgsfd
+0
