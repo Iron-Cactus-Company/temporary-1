@@ -6,10 +6,9 @@ pipeline {
             when {
                 branch "bug/*"
             }
-            steps {                
-                sh '''
-                cat README.md
-                '''
+            steps {              
+                echo "Failing here"
+                sh 'exit 1'
             }
         }
         stage('For PRs') {
