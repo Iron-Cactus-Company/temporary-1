@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+import type {Config} from 'jest';
 
 const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
@@ -10,6 +10,15 @@ const config: Config = {
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: './coverage',
   testEnvironment: 'node',
+
+  coverageReporters: [
+    "text",
+    "html"
+  ],
+  reporters: [
+    "default",
+    "jest-junit"
+  ],
 };
 
 export default config;
