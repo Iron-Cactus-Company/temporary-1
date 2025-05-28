@@ -23,8 +23,13 @@ pipeline {
                         error("Stopping pipeline due to npm install failure")
                     }
 
+//                     def testOutput = sh(
+//                       script: 'npm run test -- --ci 2>&1 | npx strip-ansi || true',
+//                       returnStdout: true
+//                     ).trim()
+
                     def testOutput = sh(
-                      script: 'npm run test -- --ci 2>&1 | npx strip-ansi || true',
+                      script: 'jest --coverage --coverageDirectory=output/coverage/jest',
                       returnStdout: true
                     ).trim()
 
@@ -49,6 +54,11 @@ pipeline {
                           status: 'COMPLETED',
                           conclusion: 'SUCCESS'
                     }
+                }
+                post {
+                  always {
+                    junit 'output/coverage/junit/junit.xml'
+                  }
                 }
             }
         }

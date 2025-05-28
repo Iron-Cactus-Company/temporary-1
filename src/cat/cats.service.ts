@@ -12,6 +12,6 @@ export class CatsService {
   }
 
   findOne(id: number): Cat {
-    return this.cats[id+1];
+    return this.cats[id];
   }
 }
