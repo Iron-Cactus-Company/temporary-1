@@ -59,7 +59,7 @@ pipeline {
           post {
             always {
               publishHTML target: [
-                allowMissing         : false,
+                allowMissing         : true,
                 alwaysLinkToLastBuild: false,
                 keepAll             : true,
                 reportDir            : 'coverage',
