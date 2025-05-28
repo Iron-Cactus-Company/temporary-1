@@ -8,7 +8,7 @@ const config: Config = {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
   collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: './coverage',
+  coverageDirectory: './output/coverage/jest',
   testEnvironment: 'node',
 
   coverageReporters: [
