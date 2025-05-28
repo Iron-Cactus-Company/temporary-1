@@ -17,6 +17,7 @@ const config: Config = {
   ],
   reporters: [
     "default",
+    "jest-junit"
   ],
 };
 
