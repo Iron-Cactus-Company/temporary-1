@@ -55,10 +55,10 @@ pipeline {
                           conclusion: 'SUCCESS'
                     }
                 }
-                post {
-                  always {
+            }
+            post {
+                always {
                     junit 'output/coverage/junit/junit.xml'
-                  }
                 }
             }
         }
