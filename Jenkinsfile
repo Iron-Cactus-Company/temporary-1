@@ -29,7 +29,7 @@ pipeline {
 //                     ).trim()
 
                     def testOutput = sh(
-                      script: 'jest --coverage --coverageDirectory=output/coverage/jest',
+                      script: 'npm run test -- --coverage --coverageDirectory=output/coverage/jest',
                       returnStdout: true
                     ).trim()
 
