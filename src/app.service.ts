@@ -13,6 +13,6 @@ export class AppService {
    * Returns a greeting string
    */
   getHi(): string {
-    return 'Hi World!';
+    return 'Hi World';
   }
 }
