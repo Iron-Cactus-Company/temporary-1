@@ -60,7 +60,7 @@ pipeline {
             always {
               recordCoverage(
                 tools: [
-                  [parser: 'COBERTURA', pattern: './coverage/cobertura-coverage.xml'],
+                  [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'],
                   [parser: 'JUNIT', pattern: 'junit.xml']
                 ]
               )
