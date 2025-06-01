@@ -1,71 +1,58 @@
 pipeline {
     agent { label 'nodejs-agent' }
 
+    environment {
+        DOCKER_IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+        DOCKER_IMAGE_TAG_LATEST = "${env.BRANCH_NAME}-latest"
+    }
+
     stages {
-        stage('Installing npm dependencies') {
-          steps{
-            cache(defaultBranch: 'dev',
-              maxCacheSize: 2048,
-              caches: [
-                arbitraryFileCache(
-                    path: "node_modules",
-                    includes: "**/*",
-                    cacheValidityDecidingFile: "package-lock.json"
-                )
-              ]) {
-                sh "npm install"
-              }
-          }
-        }
-
-        stage('Running tests'){
-          steps {
-            sh 'npm run test:coverage'
-          }
-          post {
-            always {
-              recordCoverage(tools: [ [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'] ])
-              junit allowEmptyResults: true, checksName: 'Unit Tests', stdioRetention: 'FAILED', testResults: 'junit.xml'
+        stage('Install npm dependencies') {
+            steps {
+                cache(defaultBranch: 'dev',
+                  maxCacheSize: 2048,
+                  caches: [
+                    arbitraryFileCache(
+                        path: "node_modules",
+                        includes: "**/*",
+                        cacheValidityDecidingFile: "package-lock.json"
+                    )
+                  ]) {
+                    sh "npm install"
+                }
             }
-          }
         }
 
-//         stage('PR checks') {
-//           when {
-//             branch 'PR-*'
-//           }
-//           steps {
-//             echo 'Running PR checks...'
-//
-//             script {
-//               def checkName = 'Unit Tests'
-//
-//               def npmStatus = sh(script: 'npm install', returnStatus: true)
-//               if (npmStatus != 0) {
-//                 publishChecks name: checkName,
-//                   title: 'Dependency Installation Failed',
-//                   summary: '`npm install` failed',
-//                   text: 'Check your `package.json` and ensure all dependencies are valid.',
-//                   status: 'COMPLETED',
-//                   conclusion: 'FAILURE'
-//                 error('Stopping pipeline due to npm install failure')
-//               }
-//
-//               def testOutput = sh(
-//                   script: 'npm run test:coverage',
-//                   returnStdout: true
-//               ).trim()
-//
-//               def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
-//             }
-//           }
-//           post {
-//             always {
-//               recordCoverage(tools: [ [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'] ])
-//
-//               junit allowEmptyResults: true, checksName: 'Unit Tests', stdioRetention: 'FAILED', testResults: 'junit.xml'
-//             }
-//           }
-//         }
+        stage('Run automation tests') {
+            steps {
+                sh 'npm run test:coverage'
+            }
+            post {
+                always {
+                    recordCoverage(tools: [[parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml']])
+                    junit allowEmptyResults: true, checksName: 'Unit Tests', stdioRetention: 'FAILED', testResults: 'junit.xml'
+                }
+            }
+        }
+
+        stage('Build and Push Docker Image') {
+            agent { label 'docker-agent' }
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'dev'
+                    branch 'prod'
+                }
+            }
+            steps {
+                withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
+                    script {
+                        def image = docker.build("${IMAGE_NAME_PREFIX}-api:${DOCKER_IMAGE_TAG}")
+                        image.push()
+                        image.push("${DOCKER_IMAGE_TAG_LATEST}")
+                    }
+                }
+            }
+        }
     }
 }
