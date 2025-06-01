@@ -31,12 +31,13 @@ pipeline {
               def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
 
               if (testFailed) {
-                recordCoverage
+                recordCoverage(
                   enabledForFailure: true,
                   tools: [
                     [parser: 'JUNIT', pattern: 'junit.xml']
                   ]
-                }
+                )
+              }
             }
           }
           post {
