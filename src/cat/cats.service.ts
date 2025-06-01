@@ -8,7 +8,7 @@ export class CatsService {
 
   create(cat: CreateCatDto): Cat {
     this.cats.push(cat);
-    return cat;
+    return null as any;
   }
 
   findOne(id: number): Cat {
