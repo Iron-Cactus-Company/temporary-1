@@ -31,24 +31,31 @@ pipeline {
               def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
 
               if (testFailed) {
-                recordCoverage(
-                  enabledForFailure: true,
-                  tools: [
-                    [parser: 'JUNIT', pattern: 'junit.xml']
-                  ]
-                )
-              }
+                publishChecks name: checkName,
+                  title: 'Unit Tests Failed',
+                  summary: '❌ Jest tests failed',
+                  text: """```
+                  ${testOutput.take(6500)}
+                  ```""",
+                  status: 'COMPLETED',
+                  conclusion: 'FAILURE'
+             } else {
+                publishChecks name: checkName,
+                  title: 'Unit Tests Passed',
+                  summary: '✅ All Jest tests passed',
+                  text: """```
+                  ${testOutput.take(6500)}
+                  ```""",
+                  status: 'COMPLETED',
+                  conclusion: 'SUCCESS'
+             }
             }
           }
           post {
             always {
-              recordCoverage(
-                enabledForFailure: true,
-                tools: [
-                  [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'],
-                  [parser: 'JUNIT', pattern: 'junit.xml']
-                ]
-              )
+              recordCoverage(tools: [ [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'] ])
+
+              junit 'junit.xml'
             }
           }
         }
