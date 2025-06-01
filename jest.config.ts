@@ -12,11 +12,9 @@ const config: Config = {
   testEnvironment: 'node',
 
   coverageReporters: [
-    "text",
     "cobertura"
   ],
   reporters: [
-    "default",
     "jest-junit"
   ],
 };
