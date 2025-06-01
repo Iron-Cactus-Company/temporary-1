@@ -23,11 +23,6 @@ pipeline {
                 error('Stopping pipeline due to npm install failure')
               }
 
-    //                     def testOutput = sh(
-    //                       script: 'npm run test -- --ci 2>&1 | npx strip-ansi || true',
-    //                       returnStdout: true
-    //                     ).trim()
-
               def testOutput = sh(
                   script: 'npm run test:coverage',
                   returnStdout: true
@@ -36,24 +31,12 @@ pipeline {
               def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
 
               if (testFailed) {
-                publishChecks name: checkName,
-                  title: 'Unit Tests Failed',
-                  summary: '❌ Jest tests failed',
-                  text: """```
-                  ${testOutput.take(6500)}
-                  ```""",
-                  status: 'COMPLETED',
-                  conclusion: 'FAILURE'
-                } else {
-                publishChecks name: checkName,
-                  title: 'Unit Tests Passed',
-                  summary: '✅ All Jest tests passed',
-                  text: """```
-                  ${testOutput.take(6500)}
-                  ```""",
-                  status: 'COMPLETED',
-                  conclusion: 'SUCCESS'
-              }
+                recordCoverage
+                  enabledForFailure: true,
+                  tools: [
+                    [parser: 'JUNIT', pattern: 'junit.xml']
+                  ]
+                }
             }
           }
           post {
@@ -64,17 +47,6 @@ pipeline {
                   [parser: 'JUNIT', pattern: 'junit.xml']
                 ]
               )
-
-//               junit 'junit.xml'
-
-//               publishHTML target: [
-//                 allowMissing         : true,
-//                 alwaysLinkToLastBuild: false,
-//                 keepAll             : true,
-//                 reportDir            : 'coverage',
-//                 reportFiles          : 'index.html',
-//                 reportName           : 'Unit Test Report'
-//               ]
             }
           }
         }
