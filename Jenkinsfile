@@ -30,32 +30,32 @@ pipeline {
 
               def testFailed = testOutput.contains('FAIL') || testOutput.contains('Test Suites: ') && testOutput.contains('failed')
 
-              if (testFailed) {
-                publishChecks name: checkName,
-                  title: 'Unit Tests Failed',
-                  summary: '❌ Jest tests failed',
-                  text: """```
-                  ${testOutput.take(6500)}
-                  ```""",
-                  status: 'COMPLETED',
-                  conclusion: 'FAILURE'
-             } else {
-                publishChecks name: checkName,
-                  title: 'Unit Tests Passed',
-                  summary: '✅ All Jest tests passed',
-                  text: """```
-                  ${testOutput.take(6500)}
-                  ```""",
-                  status: 'COMPLETED',
-                  conclusion: 'SUCCESS'
-             }
+//               if (testFailed) {
+//                 publishChecks name: checkName,
+//                   title: 'Unit Tests Failed',
+//                   summary: '❌ Jest tests failed',
+//                   text: """```
+//                   ${testOutput.take(6500)}
+//                   ```""",
+//                   status: 'COMPLETED',
+//                   conclusion: 'FAILURE'
+//              } else {
+//                 publishChecks name: checkName,
+//                   title: 'Unit Tests Passed',
+//                   summary: '✅ All Jest tests passed',
+//                   text: """```
+//                   ${testOutput.take(6500)}
+//                   ```""",
+//                   status: 'COMPLETED',
+//                   conclusion: 'SUCCESS'
+//              }
             }
           }
           post {
             always {
               recordCoverage(tools: [ [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'] ])
 
-              junit 'junit.xml'
+              junit allowEmptyResults: true, checksName: 'Unit Tests', stdioRetention: 'FAILED', testResults: 'junit.xml'
             }
           }
         }
