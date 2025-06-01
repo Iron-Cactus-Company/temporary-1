@@ -13,7 +13,7 @@ const config: Config = {
 
   coverageReporters: [
     "text",
-    "html"
+    "cobertura"
   ],
   reporters: [
     "default",

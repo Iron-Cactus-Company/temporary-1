@@ -58,16 +58,18 @@ pipeline {
           }
           post {
             always {
-              junit 'junit.xml'
+                 recordCoverage(tools: [[parser: 'COBERTURA'], [parser: 'JUNIT']])
 
-              publishHTML target: [
-                allowMissing         : true,
-                alwaysLinkToLastBuild: false,
-                keepAll             : true,
-                reportDir            : 'coverage',
-                reportFiles          : 'index.html',
-                reportName           : 'Unit Test Report'
-              ]
+//               junit 'junit.xml'
+
+//               publishHTML target: [
+//                 allowMissing         : true,
+//                 alwaysLinkToLastBuild: false,
+//                 keepAll             : true,
+//                 reportDir            : 'coverage',
+//                 reportFiles          : 'index.html',
+//                 reportName           : 'Unit Test Report'
+//               ]
             }
           }
         }
