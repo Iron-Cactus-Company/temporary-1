@@ -4,15 +4,17 @@ pipeline {
     stages {
         stage('Installing npm dependencies') {
           steps{
-            cache(defaultBranch: 'dev', caches: [
+            cache(defaultBranch: 'dev',
+              maxCacheSize: 2048,
+              caches: [
                 arbitraryFileCache(
                     path: "node_modules",
                     includes: "**/*",
                     cacheValidityDecidingFile: "package-lock.json"
                 )
-            ]) {
+              ]) {
                 sh "npm install"
-            }
+              }
           }
         }
 
