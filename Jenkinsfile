@@ -43,6 +43,7 @@ pipeline {
           post {
             always {
               recordCoverage(
+                enabledForFailure: true,
                 tools: [
                   [parser: 'COBERTURA', pattern: '**/cobertura-coverage.xml'],
                   [parser: 'JUNIT', pattern: 'junit.xml']
