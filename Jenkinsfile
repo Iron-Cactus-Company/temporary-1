@@ -48,7 +48,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
                     script {
-                        def image = docker.build("${IMAGE_NAME_PREFIX}-api:${DOCKER_IMAGE_TAG}")
+                        def image = docker.build(IMAGE_NAME_PREFIX + "-api:" + DOCKER_IMAGE_TAG)
                         image.push()
                         image.push("${DOCKER_IMAGE_TAG_LATEST}")
                     }
