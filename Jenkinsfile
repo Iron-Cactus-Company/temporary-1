@@ -48,8 +48,10 @@ pipeline {
             steps {
               script {
                   def image = docker.build("deriabin/altzone-api:${DOCKER_IMAGE_TAG}")
-                  image.push()
-                  image.push("${DOCKER_IMAGE_TAG_LATEST}")
+                  docker.withRegistry([credentialsId: 'alt-dockerhub']) {
+                    image.push()
+                    image.push("${DOCKER_IMAGE_TAG_LATEST}")
+                  }
               }
 
 //                 withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
