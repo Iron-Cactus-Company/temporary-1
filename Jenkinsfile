@@ -48,7 +48,8 @@ pipeline {
             steps {
               withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
                 script {
-                  def imageName = IMAGE_NAME_PREFIX + "-api:" + DOCKER_IMAGE_TAG
+                  def imagePrefix = IMAGE_NAME_PREFIX;
+                  def imageName = imagePrefix + "-api:" + DOCKER_IMAGE_TAG
                   def image = docker.build(imageName)
                   docker.withRegistry('https://index.docker.io/v1/', 'alt-dockerhub') {
                     image.push()
