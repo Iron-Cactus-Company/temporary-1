@@ -47,11 +47,13 @@ pipeline {
             }
             steps {
               withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
+                script {
                   def image = docker.build("${IMAGE_NAME_PREFIX}:${DOCKER_IMAGE_TAG}")
                   docker.withRegistry([credentialsId: 'alt-dockerhub']) {
                     image.push()
                     image.push("${DOCKER_IMAGE_TAG_LATEST}")
                   }
+                }
               }
 
 //                 withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
