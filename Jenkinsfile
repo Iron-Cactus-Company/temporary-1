@@ -50,7 +50,7 @@ pipeline {
                     script {
                         def imageName = env.IMAGE_NAME_PREFIX + "-api"
                         def imageTag = env.BRANCH_NAME + "-" + env.BUILD_NUMBER
-                        def image = docker.build("${imageName}:${imageTag}")
+                        def image = docker.build("deriabin/altzone-api:${imageTag}")
                         image.push()
                         image.push("${env.BRANCH_NAME}-latest")
                     }
