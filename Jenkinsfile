@@ -46,27 +46,15 @@ pipeline {
                 }
             }
             steps {
-            script {
-                withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
-
-                    def image = docker.build("${IMAGE_NAME_PREFIX}:${DOCKER_IMAGE_TAG}")
-                    docker.withRegistry([credentialsId: 'alt-dockerhub']) {
-                      image.push()
-                      image.push("${DOCKER_IMAGE_TAG_LATEST}")
-                    }
-
+              withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
+                script {
+                  def image = docker.build("${IMAGE_NAME_PREFIX}:${DOCKER_IMAGE_TAG}")
+                  docker.withRegistry('https://index.docker.io/v1/', 'alt-dockerhub') {
+                    image.push()
+                    image.push("${DOCKER_IMAGE_TAG_LATEST}")
+                  }
                 }
               }
-
-//                 withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
-//                     script {
-//                         def imageName = env.IMAGE_NAME_PREFIX + "-api"
-//                         def imageTag = env.BRANCH_NAME + "-" + env.BUILD_NUMBER
-//                         def image = docker.build("${imageName}:${imageTag}")
-//                         image.push()
-//                         image.push("${env.BRANCH_NAME}-latest")
-//                     }
-//                 }
             }
         }
     }
