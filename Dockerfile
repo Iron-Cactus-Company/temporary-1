@@ -26,8 +26,6 @@ COPY --chown=node:node package-lock.json package-lock.json
 RUN npm ci --only-production && npm cache clean --force
 
 COPY --from=compile /app/dist ./dist
-COPY --from=compile /app/public ./public
-COPY --from=compile /app/swagger.json ./swagger.json
 
 FROM debian:12-slim AS start
 
