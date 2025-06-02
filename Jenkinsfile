@@ -46,15 +46,21 @@ pipeline {
                 }
             }
             steps {
-                withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
-                    script {
-                        def imageName = env.IMAGE_NAME_PREFIX + "-api"
-                        def imageTag = env.BRANCH_NAME + "-" + env.BUILD_NUMBER
-                        def image = docker.build("deriabin/altzone-api:${imageTag}")
-                        image.push()
-                        image.push("${env.BRANCH_NAME}-latest")
-                    }
-                }
+              script {
+                  def image = docker.build("deriabin/altzone-api:${DOCKER_IMAGE_TAG}")
+                  image.push()
+                  image.push("${DOCKER_IMAGE_TAG_LATEST}-latest")
+              }
+
+//                 withCredentials([string(credentialsId: 'alt-docker-image', variable: 'IMAGE_NAME_PREFIX')]) {
+//                     script {
+//                         def imageName = env.IMAGE_NAME_PREFIX + "-api"
+//                         def imageTag = env.BRANCH_NAME + "-" + env.BUILD_NUMBER
+//                         def image = docker.build("${imageName}:${imageTag}")
+//                         image.push()
+//                         image.push("${env.BRANCH_NAME}-latest")
+//                     }
+//                 }
             }
         }
     }
